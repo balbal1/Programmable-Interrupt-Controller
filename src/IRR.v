@@ -10,7 +10,6 @@ input [7:0]IMR;
 input [7:0] ISR ;
 input resetIRRbit ;
 output reg [7:0] IRR;
-IMR MR (.IMR(IMR));
 always @(posedge  ) begin
 if (resetIRRbit) begin
    IRR<=IRR& ~(ISR) ; 
