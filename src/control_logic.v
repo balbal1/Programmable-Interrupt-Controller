@@ -11,33 +11,19 @@ output reg vector_address;
 
 reg[7:0] icw1,icw2,icw3,icw4; 
 wire [2:0] out ; // for encoder
-<<<<<<< Updated upstream
 //one hot coded states for ICW FSM 
 parameter idle=0001;
 parameter ICW2=0010;
 parameter ICW3=0100;
 parameter ICW4=1000 ;
  reg [1:0] currentstate,nextstate=idle ;
-=======
-//grey coded states for ICW FSM 
-parameter idle=00;
-parameter ICW2=01;
-parameter ICW3=11;
-parameter ICW4=10 ;
-reg [1:0] currentstate=idle,nextstate;
->>>>>>> Stashed changes
- 
+
 wire [7:0] ISR;
 wire send_vector;
 integer numberOfAck = 0;
 
 //inistantiations
-<<<<<<< Updated upstream
-encoder isr_encoder (.out(out), .in(ISR));
-DataBusBuffer m0(.Direction(Direction),.Rxdata(dataBus));
-Read_write_logic m1(.WR_out(WR),.A0(A0),.RD_out(RD));
-// instantiaton for priority resolver to get INT signal
-=======
+
 /*
 PriorityResolver PR (.ISR(ISR)) ;
 DataBusBuffer  buffer(.Direction(Direction),.Rxdata(dataBus));
@@ -45,7 +31,6 @@ Read_write_logic re_wr(.WR_out(WR),.A0(A0),.RD_out(RD));
 */
 
 encoder isr_encoder (.out(out), .in(ISR));
->>>>>>> Stashed changes
 
 
 //  FSM to detect ICW
