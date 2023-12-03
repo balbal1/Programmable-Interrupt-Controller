@@ -1,37 +1,51 @@
 module control (
-INT,INTA,IRR,priority, ISR, dataBus, WR, RD, A0,Direction ,fromControlLogic_toPriorityResolver,vector_address,resetIRRbit );
+INTA, dataBus, WR, RD, A0,Direction ,vector_address );
 input INTA;
-input [7:0] IRR;
-input [7:0] priority;
 input [7:0] ISR;
 input [7:0] dataBus;
 input WR;
 input RD;
 input A0;
 output reg Direction;
-output reg fromControlLogic_toPriorityResolver;
 output reg vector_address;
-output reg resetIRRbit ;
-output reg INT;
 
 reg[7:0] icw1,icw2,icw3,icw4; 
 wire [2:0] out ; // for encoder
+<<<<<<< Updated upstream
 //one hot coded states for ICW FSM 
 parameter idle=0001;
 parameter ICW2=0010;
 parameter ICW3=0100;
 parameter ICW4=1000 ;
  reg [1:0] currentstate,nextstate=idle ;
+=======
+//grey coded states for ICW FSM 
+parameter idle=00;
+parameter ICW2=01;
+parameter ICW3=11;
+parameter ICW4=10 ;
+reg [1:0] currentstate=idle,nextstate;
+>>>>>>> Stashed changes
  
-wire isIntrupt;
+wire [7:0] ISR;
 wire send_vector;
 integer numberOfAck = 0;
 
 //inistantiations
+<<<<<<< Updated upstream
 encoder isr_encoder (.out(out), .in(ISR));
 DataBusBuffer m0(.Direction(Direction),.Rxdata(dataBus));
 Read_write_logic m1(.WR_out(WR),.A0(A0),.RD_out(RD));
 // instantiaton for priority resolver to get INT signal
+=======
+/*
+PriorityResolver PR (.ISR(ISR)) ;
+DataBusBuffer  buffer(.Direction(Direction),.Rxdata(dataBus));
+Read_write_logic re_wr(.WR_out(WR),.A0(A0),.RD_out(RD));
+*/
+
+encoder isr_encoder (.out(out), .in(ISR));
+>>>>>>> Stashed changes
 
 
 //  FSM to detect ICW
@@ -58,7 +72,7 @@ always@(currentstate ,dataBus,A0 ) begin // next state logic
 end
 always@(currentstate ,dataBus,A0) begin // output logic
    case(currentstate)
-    idle:if (dataBus[4]==1 && A0==0) begin
+    ICW1:if (dataBus[4]==1 && A0==0) begin
          Direction=1;
          icw1<=dataBus;
     end
