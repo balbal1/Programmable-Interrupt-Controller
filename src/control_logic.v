@@ -1,5 +1,5 @@
-module control (
-INTA, dataBus, WR, RD, A0,Direction ,vector_address );
+module control_logic (
+INTA, dataBus, WR, RD, A0,Direction ,vector_address, ISR );
 input INTA;
 input [7:0] ISR;
 input [7:0] dataBus;
@@ -16,9 +16,8 @@ parameter idle=0001;
 parameter ICW2=0010;
 parameter ICW3=0100;
 parameter ICW4=1000 ;
- reg [1:0] currentstate,nextstate=idle ;
+reg [3:0] currentstate,nextstate=idle ;
 
-wire [7:0] ISR;
 wire send_vector;
 integer numberOfAck = 0;
 
@@ -57,7 +56,7 @@ always@(currentstate ,dataBus,A0 ) begin // next state logic
 end
 always@(currentstate ,dataBus,A0) begin // output logic
    case(currentstate)
-    ICW1:if (dataBus[4]==1 && A0==0) begin
+    idle:if (dataBus[4]==1 && A0==0) begin
          Direction=1;
          icw1<=dataBus;
     end

@@ -1,22 +1,19 @@
 module  IRR (
     //inputs
-    IR0,IR1,IR2,IR3,IR4,IR5,IR6,IR7,
-IMR,
+    IR0,IR1,IR2,IR3,IR4,IR5,IR6,IR7, IMR, resetIRRbit,
 //output
-IRR    
+IRR, ISR
 );
 input IR0,IR1,IR2,IR3,IR4,IR5,IR6,IR7;
 input [7:0]IMR;
 input [7:0] ISR ;
 input resetIRRbit ;
 output reg [7:0] IRR;
-always @(posedge  ) begin
-if (resetIRRbit) begin
-   IRR<=IRR& ~(ISR) ; 
-end
-else
-    IRR<={IR7&~IMR[7],IR6&~IMR[6],IR5&~IMR[5],IR4&~IMR[4],IR3&~IMR[3],IR2&~IMR[2],IR1&~IMR[1],IR0&~IMR[0]} ;
-
+always @(*) begin
+    if (resetIRRbit) begin
+        IRR<=IRR& ~(ISR) ; 
+    end else
+        IRR<={IR7&~IMR[7],IR6&~IMR[6],IR5&~IMR[5],IR4&~IMR[4],IR3&~IMR[3],IR2&~IMR[2],IR1&~IMR[1],IR0&~IMR[0]} ;
 end
 
     
