@@ -1,4 +1,4 @@
-module encoder (in, out);
+module Encoder (in, out);
 
     input [7:0] in;
     output reg [2:0] out;

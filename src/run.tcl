@@ -1,22 +1,21 @@
 vlib work
-vlog buffer.v control_logic.v encoder.v IRR.v priorityresolver.v read_write.v topmodule.v topmodule_tb.v
-vsim -voptargs=+acc work.topmodule_tb
-add wave /topmodule_tb/INTA
-add wave /topmodule_tb/INT
-add wave /topmodule_tb/top/IRR
-add wave /topmodule_tb/top/ISR
-add wave /topmodule_tb/top/priority/INTACOUNT
-add wave /topmodule_tb/top/control/numberOfAck
-add wave /topmodule_tb/top/control/vector_address
-add wave /topmodule_tb/A0
-add wave /topmodule_tb/RD
-add wave /topmodule_tb/WR
-add wave /topmodule_tb/top/dataBus
-add wave /topmodule_tb/top/direction
-add wave /topmodule_tb/top/control/currentstate
-add wave /topmodule_tb/top/control/nextstate
-add wave /topmodule_tb/top/control/icw1
-add wave /topmodule_tb/top/control/icw2
-add wave /topmodule_tb/top/control/icw3
-add wave /topmodule_tb/top/control/icw4
+vlog DataBusBuffer.v ControlLogic.v Encoder.v IRR.v PriorityResolver.v ReadWriteLogic.v InterruptController.v InterruptController_tb.v
+vsim -voptargs=+acc work.InterruptController_tb
+add wave /InterruptController_tb/INTA
+add wave /InterruptController_tb/INT
+add wave /InterruptController_tb/InterruptController/irr
+add wave /InterruptController_tb/InterruptController/isr
+add wave /InterruptController_tb/InterruptController/number_of_ack
+add wave /InterruptController_tb/InterruptController/ControlLogic/vector_address
+add wave /InterruptController_tb/A0
+add wave /InterruptController_tb/RD
+add wave /InterruptController_tb/WR
+add wave /InterruptController_tb/InterruptController/DATABUS
+add wave /InterruptController_tb/InterruptController/direction
+add wave /InterruptController_tb/InterruptController/ControlLogic/currentstate
+add wave /InterruptController_tb/InterruptController/ControlLogic/nextstate
+add wave /InterruptController_tb/InterruptController/ControlLogic/icw1
+add wave /InterruptController_tb/InterruptController/ControlLogic/icw2
+add wave /InterruptController_tb/InterruptController/ControlLogic/icw3
+add wave /InterruptController_tb/InterruptController/ControlLogic/icw4
 run -all

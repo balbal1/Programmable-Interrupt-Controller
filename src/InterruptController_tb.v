@@ -1,16 +1,16 @@
-module topmodule_tb ();
+module InterruptController_tb ();
     
 reg INTA, IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, A0, RD, WR, CS;
 wire INT;
+wire [7:0] DATABUS;
 
-wire [7:0] dataBus;
 reg [7:0] inout_drive;
 wire [7:0] inout_recv;
 
-assign dataBus = inout_drive;
-assign inout_recv = dataBus;
+assign DATABUS = inout_drive;
+assign inout_recv = DATABUS;
 
-topmodule top (INTA, INT, IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, RD, WR, A0, CS, dataBus);
+InterruptController InterruptController (INTA, INT, IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, RD, WR, A0, CS, DATABUS);
 
 initial begin
 
