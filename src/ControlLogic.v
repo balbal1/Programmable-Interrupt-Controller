@@ -9,31 +9,30 @@ module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_addr
     reg[7:0] icw1, icw2, icw3, icw4; 
     wire [2:0] out ; // for encoder
     //one hot coded states for ICW FSM 
-    parameter idle = 5'b00001,
-              ICW2 = 5'b00010,
-              ICW3 = 5'b00100,
-              ICW4 = 5'b01000,
-              finish = 5'b10000;
-    reg [4:0] currentstate, nextstate = idle ;
+    parameter idle = 4'b0001,
+              ICW2 = 4'b0010,
+              ICW3 = 4'b0100,
+              ICW4 = 4'b1000;
+    reg [3:0] currentstate = idle, nextstate = idle;
 
     Encoder Encoder (.out(out), .in(isr));
 
     //  FSM to detect ICW
-    always @(posedge wr) begin   // State memory 
+    always @(negedge wr) begin   // State memory 
         currentstate <= nextstate;
     end
 
     always@(currentstate, command_word, a0) begin // next state logic 
         case (currentstate)
             idle: begin
-                if (command_word[4] == 1'b1 && a0 == 1'b0) begin  // to check if it is ICW or not
+                if (command_word[4] == 1'b1 && a0 == 1'b0)  // to check if it is ICW or not
                     nextstate <= ICW2;
-                end
-                else nextstate <= idle;
+                else
+                    nextstate <= idle;
             end
             ICW2: begin
                 if (icw1[1] == 1 && icw1[0] == 0) // no icw3 and no icw4
-                    begin nextstate <= finish; end
+                    nextstate <= idle;
                 else if (icw1[1] == 0) // there is icw3
                     nextstate <= ICW3;
                 else if (icw1[0] == 1 && icw1[1] == 1) // there is icw4 and no icw3
@@ -43,10 +42,9 @@ module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_addr
                 if (icw1[0]) // there is icw4
                     nextstate <= ICW4;
                 else
-                    nextstate <= finish;
+                    nextstate <= idle;
             end
-            ICW4: nextstate <= finish; 
-            finish: nextstate <= finish;
+            ICW4: nextstate <= idle; 
         endcase
     end
 
@@ -69,8 +67,6 @@ module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_addr
             ICW4: begin
                 direction = 0;
                 icw4 <= command_word;
-            end
-            finish: begin
             end
         endcase
     end

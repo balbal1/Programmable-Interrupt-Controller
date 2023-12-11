@@ -15,9 +15,9 @@ module PriorityResolver (irr, INTA, isr, INT, reset_irr_bit, number_of_ack);
 
         if (number_of_ack == 2 && INTA == 1'b1) begin
             reset_irr_bit <= 0;
-            isr <=0 ; //AEO 
+            isr <= 0; //AEO 
         end else if(number_of_ack == 1 && INTA == 1'b0) begin
-            reset_irr_bit <= 1 ;
+            reset_irr_bit <= 1;
             if (irr[0] == 1) isr <= 8'b00000001;
             else if (irr[1] == 1) isr <= 8'b00000010;
             else if (irr[2] == 1) isr <= 8'b00000100;
@@ -29,11 +29,11 @@ module PriorityResolver (irr, INTA, isr, INT, reset_irr_bit, number_of_ack);
         end
     end
 
-    always @(posedge INTA or irr) begin
-        if (number_of_ack == 0)
-            INT <= |(irr);
-        else if (number_of_ack == 2 && INTA==1)
+    always @(posedge INTA or irr or number_of_ack) begin
+        if (number_of_ack == 2 && INTA == 1)
             INT <= 0;
+        else if (number_of_ack == 0)
+            INT <= |(irr);
     end
 
 endmodule

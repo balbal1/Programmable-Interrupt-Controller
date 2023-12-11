@@ -1,5 +1,5 @@
 vlib work
-vlog DataBusBuffer.v ControlLogic.v Encoder.v IRR.v PriorityResolver.v ReadWriteLogic.v InterruptController.v InterruptController_tb.v
+vlog InterruptController_tb.v InterruptController.v ControlLogic.v PriorityResolver.v IRR.v DataBusBuffer.v ReadWriteLogic.v Encoder.v
 vsim -voptargs=+acc work.InterruptController_tb
 add wave /InterruptController_tb/INTA
 add wave /InterruptController_tb/INT

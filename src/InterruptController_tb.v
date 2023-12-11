@@ -24,55 +24,55 @@ initial begin
     IR7 = 0;
     INTA = 1;
     WR=1;
+    #5
 
-    #5
-    WR=0;
-    A0 = 0;
-    #5
     inout_drive=8'b10111101;
-    #5
-    WR=1;
-    #5
+    A0 = 0;
+    #1;
     WR=0;
-    A0 = 1;
-    #5
-    inout_drive=8'b10111100;
-    #5
-    WR=1;
-    #5
-    WR=0;
-    #5
-    inout_drive=8'b00000000;
-    #5
-    WR=1;
-    #5
-    WR=0;
-    #5
-    inout_drive=8'b00000010;
-    #5
-    WR=1;
-    #5
-    inout_drive=8'bZZZZZZZZ;
-
-    IR3 = 0;
-
     #5;
+    inout_drive=8'hZZ;
+    WR=1;
+    #5;    
+
+    inout_drive=8'b10111100;
+    A0 = 1;
+    #1;
+    WR=0;
+    #5
+    inout_drive=8'hZZ;
+    WR=1;
+    #5
+
+    inout_drive=8'b00000000;
+    #1;
+    WR=0;
+    #5
+    inout_drive=8'hZZ;
+    WR=1;
+    #5
+
+    inout_drive=8'b00000010;
+    #1;
+    WR=0;
+    #5
+    inout_drive=8'hZZ;
+    WR=1;
+    #10
 
     IR3 = 1;
-    #1;
+    #3;
     IR1 = 1;
-    #1;
+    #7;
 
-    #8;
     INTA = 0;
     #5;
     INTA = 1;
     #5;
     INTA = 0;
     #5;
+    INTA = 1;
     IR1 = 0;
-    INTA = 1;
-
     #10;
 
     INTA = 0;
@@ -81,11 +81,8 @@ initial begin
     #5;
     INTA = 0;
     #5;
-    IR3 = 0;
     INTA = 1;
-
-
-
+    IR3 = 0;
     #5;
 
     $stop;
