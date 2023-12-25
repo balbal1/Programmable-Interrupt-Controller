@@ -1,13 +1,16 @@
-module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_address, number_of_ack);
+module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_address, number_of_ack,send_vector_address, icw3, icw4);
 
     input INTA, wr, rd, a0;
-    input [7:0] isr, command_word;
+    input send_vector_address; // from cascade module 
     input [1:0] number_of_ack;
+    input [7:0] isr, command_word;
     output reg direction;
     output [7:0] vector_address;
-
-    reg[7:0] icw1, icw2, icw3, icw4, ocw1, ocw2, ocw3; 
+    output reg [7:0] icw3, icw4;
+    
+    reg [7:0] icw1, icw2, ocw1, ocw2, ocw3; 
     wire [2:0] out ; // for encoder
+
     //one hot coded states for ICW FSM 
     parameter idle = 5'b00001,
               ICW1 = 5'b00010,
@@ -61,10 +64,9 @@ module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_addr
             ICW4: icw4 <= command_word;
         endcase
     end
-/
 
-always @(negedge wr) begin // to detect OCW 
-     if (nextstate == idle) begin
+    always @(negedge wr) begin // to detect OCW 
+        if (nextstate == idle) begin
             if (a0 == 1)
                 ocw1 <= command_word;
             else if (command_word[3] == 0)
@@ -72,11 +74,11 @@ always @(negedge wr) begin // to detect OCW
             else
                 ocw3 <= command_word;
         end
-end
+    end
 
     // to open the tri-state buffer when sending the vector address 
-    always @(number_of_ack) begin   
-        if (number_of_ack == 2)
+    always @(number_of_ack, send_vector_address) begin   
+        if (number_of_ack == 2 && send_vector_address)
             direction = 1;
         else
             direction = 0;
