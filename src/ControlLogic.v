@@ -1,15 +1,15 @@
-module ControlLogic (wr, rd, a0, send_vector_address, number_of_ack, command_word, isr_highest_bit, level_triggered, auto_eoi, direction, read_register, vector_address, icw3, ocw1, ocw2);
+module ControlLogic (wr, rd, a0, send_vector_address, number_of_ack, command_word, irr, isr, isr_highest_bit, level_triggered, auto_eoi, direction, databus_output, icw3, ocw1, ocw2);
 
     input wr, rd, a0, send_vector_address;
     input [1:0] number_of_ack;
-    input [7:0] command_word, isr_highest_bit;
+    input [7:0] command_word, irr, isr, isr_highest_bit;
     output level_triggered, auto_eoi;
     output reg direction;
-    output [1:0] read_register;
-    output [7:0] vector_address;
+    output [7:0] databus_output;
     output reg [7:0] icw3, ocw1 = 8'h00, ocw2 = 8'h40;
     
     reg [2:0] interrupt_address;
+    wire [7:0] selected_register, vector_address;
     reg [7:0] icw1, icw2, icw4, ocw3 = 8'h08;
 
     //one hot coded states for ICW FSM 
@@ -22,8 +22,10 @@ module ControlLogic (wr, rd, a0, send_vector_address, number_of_ack, command_wor
 
     assign auto_eoi = icw4[1];
     assign level_triggered = icw1[3];
-    assign read_register = ocw3[1:0];
+
     assign vector_address = {icw2[7:3], interrupt_address}; //concatinating number of interupt(out) with T7-T3
+    assign selected_register = ocw3[0] ? isr : irr;
+    assign databus_output = ocw3[1] ? selected_register : vector_address;
 
     always @(isr_highest_bit) begin
         case (isr_highest_bit)
