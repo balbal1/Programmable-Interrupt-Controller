@@ -17,7 +17,7 @@ module  IRR (IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, INTA, reset_irr_bit, level_
     assign clear_ir6 = reset_irr_bit & irr_highest_bit == 8'h40;
     assign clear_ir7 = reset_irr_bit & irr_highest_bit == 8'h80;
 
-    always @(IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, ir0, ir1, ir2, ir3, ir4, ir5, ir6, ir7, posedge reset_irr_bit, number_of_ack) begin
+    always @(IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, ir0, ir1, ir2, ir3, ir4, ir5, ir6, ir7, reset_irr_bit, number_of_ack) begin
         if (!level_triggered)
             irr = {ir7, ir6, ir5, ir4, ir3, ir2, ir1, ir0};
         else begin

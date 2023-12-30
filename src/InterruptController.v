@@ -97,7 +97,7 @@ module InterruptController (INTA, INT, IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, R
     Cascade Cascade(
         .CAS(CAS),
         .SP_EN(SP_EN),
-        .isr(isr),
+        .isr_highest_bit(isr_highest_bit),
         .icw3(icw3),
         .send_vector_address(send_vector_address)
     );

@@ -1,8 +1,8 @@
-module Cascade (CAS, SP_EN, isr, icw3, send_vector_address);
+module Cascade (CAS, SP_EN, isr_highest_bit, icw3, send_vector_address);
     
     inout [2:0] CAS;
     input SP_EN;
-    input [7:0] isr, icw3;
+    input [7:0] isr_highest_bit, icw3;
     output reg send_vector_address;
 
     wire [2:0] cas_read;
@@ -13,7 +13,7 @@ module Cascade (CAS, SP_EN, isr, icw3, send_vector_address);
 
     always @(*) begin
         if (SP_EN) begin
-            case (icw3 & isr)
+            case (icw3 & isr_highest_bit)
                 8'h01: begin
                     cas_write <= 3'b000;
                     send_vector_address <= 0;

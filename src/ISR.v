@@ -5,7 +5,7 @@ module ISR (INTA, higher_priority, auto_eoi, number_of_ack, irr_highest_bit, isr
     input [7:0] irr_highest_bit, isr_highest_bit, ocw2;
     output reg [7:0] isr = 8'b00000000;
     
-    always @(posedge INTA, number_of_ack, ocw2) begin // To drive isr
+    always @(INTA, number_of_ack, ocw2) begin // To drive isr
         if (number_of_ack == 2 && INTA == 1'b1) begin
             if (auto_eoi == 1) // check on mode
                 isr <= isr & (~isr_highest_bit);

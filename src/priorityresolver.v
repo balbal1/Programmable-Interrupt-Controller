@@ -13,7 +13,7 @@ module PriorityResolver (INTA, auto_eoi, irr, isr, ocw2, irr_highest_bit, isr_hi
     PriorityLevel irrhigh(.register(irr), .priority(priority), .level(irr_level), .highest(irr_highest_bit));
     PriorityLevel isrhigh(.register(isr), .priority(priority), .level(isr_level), .highest(isr_highest_bit));
 
-    always @(ocw2, posedge INTA) begin
+    always @(ocw2, INTA) begin
         if (ocw2[7] == 1'b1) begin  // check on rotation
             if (ocw2[6] == 1'b0 && number_of_ack == 2 && INTA == 1'b1) begin // check on automatic rotation
                 case (isr_highest_bit)
@@ -42,7 +42,7 @@ module PriorityResolver (INTA, auto_eoi, irr, isr, ocw2, irr_highest_bit, isr_hi
         end
     end
 
-    always @(negedge INTA or posedge INTA or posedge higher_priority) begin
+    always @(INTA, higher_priority) begin
         if ((number_of_ack == 2 && INTA == 1'b1) || (number_of_ack == 1 && irr_level < isr_level)) begin
             number_of_ack <= 0;
         end
@@ -50,7 +50,7 @@ module PriorityResolver (INTA, auto_eoi, irr, isr, ocw2, irr_highest_bit, isr_hi
             number_of_ack = number_of_ack + 1;
     end
 
-    always @(irr, posedge INTA, posedge higher_priority) begin
+    always @(irr, INTA, higher_priority) begin
         if (number_of_ack == 2 && INTA == 1) begin
             if (auto_eoi == 1'b0 && isr == isr_highest_bit && irr == 8'h00)
                 INT <= 0;
