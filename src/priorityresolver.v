@@ -2,13 +2,19 @@ module PriorityResolver (INTA, auto_eoi, irr, isr, ocw2, irr_highest_bit, isr_hi
 
     input INTA, auto_eoi;
     input [7:0] irr, isr, ocw2;
+    output higher_priority;
     output [7:0] irr_highest_bit, isr_highest_bit;
-    output reg INT, reset_irr_bit = 0, higher_priority = 0;
+    output reg INT, reset_irr_bit = 0;
     output reg [1:0] number_of_ack = 0;
 
     reg clear_reset;
+    wire reset_number_of_ack, reset_interrupt;
     wire [2:0] irr_level, isr_level;
     reg [23:0] priority = 24'b111110101100011010001000;
+
+    assign higher_priority = irr_level <= isr_level;
+    assign reset_number_of_ack = number_of_ack == 1 && irr_level < isr_level;
+    assign reset_interrupt = number_of_ack == 2 && INTA == 1;
 
     PriorityLevel irrhigh(.register(irr), .priority(priority), .level(irr_level), .highest(irr_highest_bit));
     PriorityLevel isrhigh(.register(isr), .priority(priority), .level(isr_level), .highest(isr_highest_bit));
@@ -42,16 +48,16 @@ module PriorityResolver (INTA, auto_eoi, irr, isr, ocw2, irr_highest_bit, isr_hi
         end
     end
 
-    always @(INTA, higher_priority) begin
-        if ((number_of_ack == 2 && INTA == 1'b1) || (number_of_ack == 1 && irr_level < isr_level)) begin
+    always @(INTA, reset_number_of_ack) begin
+        if ((number_of_ack == 2 && INTA == 1'b1) || reset_number_of_ack) begin
             number_of_ack <= 0;
         end
         else if (number_of_ack != 2 && INTA == 1'b0)
             number_of_ack = number_of_ack + 1;
     end
-
-    always @(irr, INTA, higher_priority) begin
-        if (number_of_ack == 2 && INTA == 1) begin
+    
+    always @(irr, higher_priority, reset_interrupt) begin
+        if (reset_interrupt) begin
             if (auto_eoi == 1'b0 && isr == isr_highest_bit && irr == 8'h00)
                 INT <= 0;
             else
@@ -60,17 +66,12 @@ module PriorityResolver (INTA, auto_eoi, irr, isr, ocw2, irr_highest_bit, isr_hi
             INT = 0;
             if (~INT)
                 INT <= 1;
-        end else if (irr != 8'h00)
-            INT <= 1;
+        end else if (auto_eoi == 1'b1 || number_of_ack != 0)
+            INT <= |(irr) | |(isr);
+        else
+            INT <= |(irr) | |(isr-isr_highest_bit);
     end
     
-    always @(irr_level, isr_level) begin
-        if (irr_level <= isr_level)
-            higher_priority <= 1;
-        else
-            higher_priority <= 0;
-    end
-
     always @(number_of_ack, irr) begin
         if (clear_reset)
             reset_irr_bit <= 0;

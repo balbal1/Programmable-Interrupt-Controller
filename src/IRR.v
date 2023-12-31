@@ -21,10 +21,7 @@ module  IRR (IR0, IR1, IR2, IR3, IR4, IR5, IR6, IR7, INTA, reset_irr_bit, level_
         if (!level_triggered)
             irr = {ir7, ir6, ir5, ir4, ir3, ir2, ir1, ir0};
         else begin
-            if (reset_irr_bit)
-                irr = irr & ~irr_highest_bit;
-            else
-                irr = {IR7, IR6, IR5, IR4, IR3, IR2, IR1, IR0} & ~imr;
+            irr = {IR7, IR6, IR5, IR4, IR3, IR2, IR1, IR0} & ~imr;
         end
     end
 
