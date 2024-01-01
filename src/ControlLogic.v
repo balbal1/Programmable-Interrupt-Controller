@@ -1,15 +1,16 @@
-module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_address, number_of_ack,send_vector_address, icw3, icw4);
+module ControlLogic (wr, rd, a0, send_vector_address, number_of_ack, command_word, irr, isr, isr_highest_bit, level_triggered, auto_eoi, direction, databus_output, icw3, ocw1, ocw2);
 
-    input INTA, wr, rd, a0;
-    input send_vector_address; // from cascade module 
+    input wr, rd, a0, send_vector_address;
     input [1:0] number_of_ack;
-    input [7:0] isr, command_word;
+    input [7:0] command_word, irr, isr, isr_highest_bit;
+    output level_triggered, auto_eoi;
     output reg direction;
-    output [7:0] vector_address;
-    output reg [7:0] icw3, icw4;
+    output [7:0] databus_output;
+    output reg [7:0] icw3, ocw1 = 8'h00, ocw2 = 8'h40;
     
-    reg [7:0] icw1, icw2, ocw1, ocw2, ocw3; 
-    wire [2:0] out ; // for encoder
+    reg [2:0] interrupt_address;
+    wire [7:0] selected_register, vector_address;
+    reg [7:0] icw1, icw2, icw4, ocw3 = 8'h08;
 
     //one hot coded states for ICW FSM 
     parameter idle = 5'b00001,
@@ -19,9 +20,26 @@ module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_addr
               ICW4 = 5'b10000;
     reg [4:0] currentstate = idle, nextstate;
 
-    assign vector_address = {icw2[7:3], out}; //concatinating number of interupt(out) with T7-T3
+    assign auto_eoi = icw4[1];
+    assign level_triggered = icw1[3];
 
-    Encoder Encoder (.out(out), .in(isr));
+    assign vector_address = {icw2[7:3], interrupt_address}; //concatinating number of interupt(out) with T7-T3
+    assign selected_register = ocw3[0] ? isr : irr;
+    assign databus_output = ocw3[1] ? selected_register : vector_address;
+
+    always @(isr_highest_bit) begin
+        case (isr_highest_bit)
+            8'h01: interrupt_address <= 3'b000;
+            8'h02: interrupt_address <= 3'b001;
+            8'h04: interrupt_address <= 3'b010;
+            8'h08: interrupt_address <= 3'b011;
+            8'h10: interrupt_address <= 3'b100;
+            8'h20: interrupt_address <= 3'b101;
+            8'h40: interrupt_address <= 3'b110;
+            8'h80: interrupt_address <= 3'b111;
+            default: interrupt_address <= 3'b000;
+        endcase
+    end
 
     //  FSM to detect ICW
     always @(negedge wr) begin   // State memory 
@@ -77,8 +95,8 @@ module ControlLogic (INTA, isr, command_word, wr, rd, a0, direction, vector_addr
     end
 
     // to open the tri-state buffer when sending the vector address 
-    always @(number_of_ack, send_vector_address) begin   
-        if (number_of_ack == 2 && send_vector_address)
+    always @(number_of_ack, send_vector_address, rd) begin   
+        if (number_of_ack == 2 && send_vector_address || rd == 1'b0)
             direction = 1;
         else
             direction = 0;
