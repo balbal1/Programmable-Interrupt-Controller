@@ -1,25 +1,40 @@
 vlib work
-vlog InterruptController_tb.v InterruptController.v ControlLogic.v PriorityResolver.v IRR.v DataBusBuffer.v ReadWriteLogic.v Encoder.v
+vlog InterruptController_tb.v InterruptController.v IRR.v ISR.v IMR.v PriorityResolver.v ControlLogic.v DataBusBuffer.v ReadWriteLogic.v Cascade.v PriorityLevel.v
 vsim -voptargs=+acc work.InterruptController_tb
 add wave /InterruptController_tb/INTA
-add wave /InterruptController_tb/INT
-add wave /InterruptController_tb/InterruptController/irr
-add wave /InterruptController_tb/InterruptController/isr
-add wave /InterruptController_tb/InterruptController/number_of_ack
+add wave /InterruptController_tb/INT_master
+add wave /InterruptController_tb/MasterInterruptController/irr
+add wave /InterruptController_tb/MasterInterruptController/isr
+add wave /InterruptController_tb/MasterInterruptController/number_of_ack
+add wave /InterruptController_tb/MasterInterruptController/reset_irr_bit
+add wave /InterruptController_tb/MasterInterruptController/higher_priority
+add wave /InterruptController_tb/MasterInterruptController/irr_highest_bit
+add wave /InterruptController_tb/MasterInterruptController/isr_highest_bit
+add wave /InterruptController_tb/MasterInterruptController/PriorityResolver/priority
+add wave /InterruptController_tb/MasterInterruptController/PriorityResolver/irr_level
+add wave /InterruptController_tb/MasterInterruptController/PriorityResolver/isr_level
 add wave /InterruptController_tb/A0
 add wave /InterruptController_tb/RD
 add wave /InterruptController_tb/WR
-add wave /InterruptController_tb/CS
-add wave /InterruptController_tb/InterruptController/direction
-add wave /InterruptController_tb/InterruptController/vector_address
+add wave /InterruptController_tb/CS_master
+add wave /InterruptController_tb/MasterInterruptController/direction
 add wave /InterruptController_tb/DATABUS
-add wave /InterruptController_tb/InterruptController/ControlLogic/currentstate
-add wave /InterruptController_tb/InterruptController/ControlLogic/nextstate
-add wave /InterruptController_tb/InterruptController/ControlLogic/icw1
-add wave /InterruptController_tb/InterruptController/ControlLogic/icw2
-add wave /InterruptController_tb/InterruptController/ControlLogic/icw3
-add wave /InterruptController_tb/InterruptController/ControlLogic/icw4
-add wave /InterruptController_tb/InterruptController/ControlLogic/ocw1
-add wave /InterruptController_tb/InterruptController/ControlLogic/ocw2
-add wave /InterruptController_tb/InterruptController/ControlLogic/ocw3
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/icw1
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/icw2
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/icw3
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/icw4
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/ocw1
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/ocw2
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/ocw3
+add wave /InterruptController_tb/CAS
+add wave /InterruptController_tb/INT_slave
+add wave /InterruptController_tb/SlaveInterruptController/irr
+add wave /InterruptController_tb/SlaveInterruptController/isr
+add wave /InterruptController_tb/SlaveInterruptController/number_of_ack
+add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw1
+add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw2
+add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw3
+add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw4
+add wave /InterruptController_tb/MasterInterruptController/ControlLogic/send_vector_address
+add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/send_vector_address
 run -all
