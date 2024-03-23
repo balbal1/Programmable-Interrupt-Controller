@@ -1,6 +1,7 @@
 # Programmable Interrupt Controller
 This is the project of CSE311 Computer Architecture.
-The project aims to design and implement a Programmable Interrupt Controller (PIC) based on the 8259-architecture using Verilog hardware description language. The 8259 PIC is a crucial component in computer systems responsible for managing and prioritizing interrupt requests, facilitating efficient communication between peripherals and the CPU.
+The project aims to design and implement a Programmable Interrupt Controller (PIC) based on the [8259-architecture](https://en.wikipedia.org/wiki/Intel_8259) using Verilog hardware description language. The 8259 PIC is a crucial component in computer systems responsible for managing and prioritizing interrupt requests, facilitating efficient communication between peripherals and the CPU.<br>
+[Project Report](https://github.com/balbal1/Programmable-Interrupt-Controller/blob/main/Project%20Report.pdf)
 ## Contributors
 |**Name**| **ID** | 
 |--|--|

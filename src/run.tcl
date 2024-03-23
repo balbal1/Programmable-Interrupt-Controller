@@ -17,6 +17,7 @@ add wave /InterruptController_tb/A0
 add wave /InterruptController_tb/RD
 add wave /InterruptController_tb/WR
 add wave /InterruptController_tb/CS_master
+add wave /InterruptController_tb/CS_slave
 add wave /InterruptController_tb/MasterInterruptController/direction
 add wave /InterruptController_tb/DATABUS
 add wave /InterruptController_tb/MasterInterruptController/ControlLogic/icw1
@@ -35,6 +36,8 @@ add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw1
 add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw2
 add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw3
 add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/icw4
+add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/ocw3
+add wave /InterruptController_tb/SlaveInterruptController/direction
 add wave /InterruptController_tb/MasterInterruptController/ControlLogic/send_vector_address
 add wave /InterruptController_tb/SlaveInterruptController/ControlLogic/send_vector_address
 run -all

@@ -233,8 +233,20 @@ module InterruptController_tb ();
         #5
         CS_master = 1;
         CS_slave = 0;
-        command_words(8'b00100000, 1'b0); //OCW2 end of interrupt
+        command_words(8'b00001011, 1'b0); //OCW3
         #5
+        RD = 0;
+        #2
+        if (DATABUS != 8'b00001110) begin //CHECK on register isr read
+            $display("Error in Case 5.0");
+        end
+        #3
+        RD = 1;
+        #5
+        command_words(8'b00001000, 1'b0); //OCW3
+        #5
+        command_words(8'b00100000, 1'b0); //OCW2 end of interrupt
+        #50
 
         $stop;
        
